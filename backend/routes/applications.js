@@ -11,12 +11,36 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "company and role are required" });
     }
 
+    const existing = await pool.query(
+      `
+      SELECT * FROM applications
+      WHERE company = $1
+        AND role = $2
+        AND platform = $3
+        AND applied_date = CURRENT_DATE
+      `,
+      [company, role, platform]
+    );
+
+    if (existing.rows.length > 0) {
+      return res.status(200).json({
+        message: "Duplicate application ignored",
+        application: existing.rows[0]
+      });
+    }
+
+    
     const result = await pool.query(
-      "INSERT INTO applications (company, role, platform) VALUES ($1, $2, $3) RETURNING *",
+      `
+      INSERT INTO applications (company, role, platform)
+      VALUES ($1, $2, $3)
+      RETURNING *
+      `,
       [company, role, platform]
     );
 
     res.status(201).json(result.rows[0]);
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to create application" });
