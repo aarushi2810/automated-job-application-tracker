@@ -45,4 +45,16 @@ Load extension:
 	•	Open chrome://extensions
 	•	Enable Developer Mode
 	•	Load extension/ folder
-    
+
+## 🧪 Demo & Usage
+
+This project is designed as a portfolio-grade system.
+
+To demo:
+1. Backend can be run locally or via the deployed Render URL
+2. Chrome extension auto-detects job application submissions
+3. Applications are stored and analyzed via backend APIs
+4. Resume–JD matching can be tested using the `/match` endpoints
+
+External services (AI APIs, cloud databases) are optional and gracefully handled when unavailable.
+
