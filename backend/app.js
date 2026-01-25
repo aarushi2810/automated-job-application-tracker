@@ -28,6 +28,9 @@ app.use("/applications", applicationsRoute);
 
 const analyticsRoute = require("./routes/analytics");
 app.use("/analytics", analyticsRoute);
+
+const followupRoute = require("./routes/followups");
+app.use("/followups", followupRoute);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
