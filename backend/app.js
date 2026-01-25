@@ -31,6 +31,8 @@ app.use("/analytics", analyticsRoute);
 
 const followupRoute = require("./routes/followups");
 app.use("/followups", followupRoute);
+const matchRoute = require("./routes/match");
+app.use("/match", matchRoute);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
