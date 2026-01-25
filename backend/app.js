@@ -25,6 +25,9 @@ const PORT = 4000;
 
 const applicationsRoute = require("./routes/applications");
 app.use("/applications", applicationsRoute);
+
+const analyticsRoute = require("./routes/analytics");
+app.use("/analytics", analyticsRoute);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
