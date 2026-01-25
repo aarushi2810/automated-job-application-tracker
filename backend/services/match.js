@@ -3,10 +3,27 @@ const { removeStopwords } = require("stopword");
 
 const tokenizer = new natural.WordTokenizer();
 
+const SKILL_MAP = {
+    "node.js": "javascript",
+    "nodejs": "javascript",
+    "postgresql": "database",
+    "sql": "database",
+    "backend": "server"
+  };
+  
+function normalizeSkills(text) {
+    let normalized = text.toLowerCase();
+    for (const key in SKILL_MAP) {
+      normalized = normalized.replaceAll(key, SKILL_MAP[key]);
+    }
+    return normalized;
+  }
+
 function preprocess(text) {
-  const tokens = tokenizer.tokenize(text.toLowerCase());
-  return removeStopwords(tokens).join(" ");
-}
+    const normalized = normalizeSkills(text);
+    const tokens = tokenizer.tokenize(normalized);
+    return removeStopwords(tokens).join(" ");
+  }
 
 function cosineSimilarity(vecA, vecB) {
   let dot = 0.0, normA = 0.0, normB = 0.0;
