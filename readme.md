@@ -63,3 +63,13 @@ The system can be tested via API endpoints using curl or Postman.
 
 Browser automation can be tested locally by simulating submission messages on any webpage.
 
+## ⚠️ Note on Cloud Database
+
+This project uses a managed PostgreSQL database on a free tier.
+During evaluation, database connectivity may be temporarily unavailable.
+
+Core system functionality (API structure, automation logic, NLP matching)
+can be tested independently via non-DB endpoints such as `/health` and `/match`.
+
+The system is designed to degrade gracefully when external services are unavailable.
+
