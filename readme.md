@@ -30,12 +30,6 @@ Browser Page
 - Secure backend communication (CORS-safe)
 - Persistent storage
 
-## 🚧 Work in Progress
-- Deduplication engine
-- Application analytics
-- Smart follow-ups
-- Resume–JD matching (AI)
-
 ## ▶️ How to Run
 ```bash
 cd backend
@@ -57,4 +51,15 @@ To demo:
 4. Resume–JD matching can be tested using the `/match` endpoints
 
 External services (AI APIs, cloud databases) are optional and gracefully handled when unavailable.
+
+
+## 🧪 Testing
+
+The system can be tested via API endpoints using curl or Postman.
+
+- `/health` — service health check
+- `/analytics/*` — application insights
+- `/match` — resume–JD matching (no DB required)
+
+Browser automation can be tested locally by simulating submission messages on any webpage.
 
