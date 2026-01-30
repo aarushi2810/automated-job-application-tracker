@@ -108,26 +108,43 @@ router.patch("/:id/status", authMiddleware, async (req, res) => {
   }
 });
 
-
-router.get("/", authMiddleware, async (req, res) => {
+router.post("/claim", authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
 
     const result = await pool.query(
       `
-      SELECT *
-      FROM applications
-      WHERE user_id = $1
-      ORDER BY applied_date DESC
+      UPDATE applications
+      SET user_id = $1
+      WHERE user_id IS NULL
+      RETURNING *
       `,
       [userId]
     );
 
-    res.json(result.rows);
+    res.json({
+      claimed: result.rowCount,
+      applications: result.rows
+    });
   } catch (err) {
-    console.error("FETCH APPLICATIONS ERROR ", err);
-    res.status(500).json({ error: "Failed to fetch applications" });
+    console.error("CLAIM ERROR ", err);
+    res.status(500).json({ error: "Failed to claim applications" });
   }
 });
 
+router.get("/", authMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT * FROM applications
+      WHERE user_id = $1
+      ORDER BY applied_date DESC
+      `,
+      [req.user.id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch applications" });
+  }
+});
 module.exports = router;
