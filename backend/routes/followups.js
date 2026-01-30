@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
+const authMiddleware = require("../middleware/authMiddleware");
 
-
-router.get("/pending", async (req, res) => {
+router.get("/pending",authMiddleware, async (req, res) => {
   const days = parseInt(req.query.days) || 7;
 
   try {

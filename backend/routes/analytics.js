@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
+const authMiddleware = require("../middleware/authMiddleware");
 
-
-router.get("/platforms", async (req, res) => {
+router.get("/platforms",authMiddleware, async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT platform, COUNT(*) AS count
@@ -20,7 +20,7 @@ router.get("/platforms", async (req, res) => {
 });
 
 
-router.get("/daily", async (req, res) => {
+router.get("/daily", authMiddleware,async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT applied_date, COUNT(*) AS count
@@ -38,7 +38,7 @@ router.get("/daily", async (req, res) => {
 });
 
 
-router.get("/total", async (req, res) => {
+router.get("/total",authMiddleware, async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT COUNT(*) AS total
