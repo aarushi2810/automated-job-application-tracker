@@ -4,6 +4,30 @@ const pool = require("../db");
 const authMiddleware = require("../middleware/authMiddleware");
 
 
+router.post("/ingest", async (req, res) => {
+  try {
+    const { company, role, platform } = req.body;
+
+    if (!company) {
+      return res.status(400).json({ error: "company required" });
+    }
+
+    const result = await pool.query(
+      `
+      INSERT INTO applications (company, role, platform, status)
+      VALUES ($1, $2, $3, 'applied')
+      RETURNING *
+      `,
+      [company, role || "Unknown", platform || "Unknown"]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("INGEST ERROR ", err);
+    res.status(500).json({ error: "Failed to ingest application" });
+  }
+});
+
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { company, role, platform } = req.body;
@@ -45,7 +69,7 @@ router.post("/", authMiddleware, async (req, res) => {
 
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error("CREATE APPLICATION ERROR 👉", err);
+    console.error("CREATE APPLICATION ERROR ", err);
     res.status(500).json({ error: "Failed to create application" });
   }
 });
@@ -79,7 +103,7 @@ router.patch("/:id/status", authMiddleware, async (req, res) => {
 
     res.json(result.rows[0]);
   } catch (err) {
-    console.error("UPDATE STATUS ERROR 👉", err);
+    console.error("UPDATE STATUS ERROR ", err);
     res.status(500).json({ error: "Failed to update status" });
   }
 });
@@ -101,7 +125,7 @@ router.get("/", authMiddleware, async (req, res) => {
 
     res.json(result.rows);
   } catch (err) {
-    console.error("FETCH APPLICATIONS ERROR 👉", err);
+    console.error("FETCH APPLICATIONS ERROR ", err);
     res.status(500).json({ error: "Failed to fetch applications" });
   }
 });
