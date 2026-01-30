@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 
 export default function Login() {
@@ -16,28 +16,44 @@ export default function Login() {
       });
 
       localStorage.setItem("token", res.data.token);
-      navigate("/dashboard"); 
+      navigate("/dashboard");
     } catch (err) {
       setError("Invalid email or password");
     }
   };
 
   return (
-    <div>
+    <div className="auth-container">
       <h2>Login</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {error && <p className="error">{error}</p>}
+
       <input
+        className="input"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
+
       <input
+        className="input"
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={handleLogin}>Login</button>
+
+      <button className="btn" onClick={handleLogin}>
+        Login
+      </button>
+
+     
+      <p style={{ marginTop: "12px" }}>
+        New here?{" "}
+        <Link to="/register" style={{ color: "#4f46e5" }}>
+          Create an account
+        </Link>
+      </p>
     </div>
   );
 }
