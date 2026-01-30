@@ -30,13 +30,13 @@ This project provides:
 ## 🏗️ System Architecture
 
 Browser Job Page
-   ↓
+   ->
 Chrome Content Script
-   ↓
+   ->
 Background Service Worker
-   ↓
+   ->
 Secure Backend API (JWT)
-   ↓
+   ->
 PostgreSQL Database
 
 
