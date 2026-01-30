@@ -30,12 +30,6 @@ Browser Page
 - Secure backend communication (CORS-safe)
 - Persistent storage
 
-## 🚧 Work in Progress
-- Deduplication engine
-- Application analytics
-- Smart follow-ups
-- Resume–JD matching (AI)
-
 ## ▶️ How to Run
 ```bash
 cd backend
@@ -45,4 +39,37 @@ Load extension:
 	•	Open chrome://extensions
 	•	Enable Developer Mode
 	•	Load extension/ folder
-    
+
+## 🧪 Demo & Usage
+
+This project is designed as a portfolio-grade system.
+
+To demo:
+1. Backend can be run locally or via the deployed Render URL
+2. Chrome extension auto-detects job application submissions
+3. Applications are stored and analyzed via backend APIs
+4. Resume–JD matching can be tested using the `/match` endpoints
+
+External services (AI APIs, cloud databases) are optional and gracefully handled when unavailable.
+
+
+## 🧪 Testing
+
+The system can be tested via API endpoints using curl or Postman.
+
+- `/health` — service health check
+- `/analytics/*` — application insights
+- `/match` — resume–JD matching (no DB required)
+
+Browser automation can be tested locally by simulating submission messages on any webpage.
+
+## ⚠️ Note on Cloud Database
+
+This project uses a managed PostgreSQL database on a free tier.
+During evaluation, database connectivity may be temporarily unavailable.
+
+Core system functionality (API structure, automation logic, NLP matching)
+can be tested independently via non-DB endpoints such as `/health` and `/match`.
+
+The system is designed to degrade gracefully when external services are unavailable.
+
