@@ -79,6 +79,24 @@ button:focus-visible {
   margin-bottom: 10px;
 }
 
+
+.claim-box {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  padding: 12px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.btn {
+  padding: 8px 12px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
