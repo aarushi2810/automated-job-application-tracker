@@ -1,16 +1,18 @@
 {
-    "manifest_version": 3,
-    "name": "Job Application Auto Tracker",
-    "version": "1.0",
-    "permissions": ["activeTab"],
-    "host_permissions": ["http://localhost:4000/*"],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["content.js"]
-      }
-    ]
-  }
+  "manifest_version": 3,
+  "name": "Job Application Auto Tracker",
+  "version": "1.0",
+  "permissions": ["activeTab"],
+  "host_permissions": [
+    "https://automated-job-application-tracker.onrender.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
