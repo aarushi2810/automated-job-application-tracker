@@ -35,20 +35,23 @@ function saveApplication() {
 }
 
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (checkForSubmission()) {
+let saved = false;
+
+function trySave() {
+  if (!saved && checkForSubmission()) {
+    saved = true;
     saveApplication();
   }
+}
 
-  const observer = new MutationObserver(() => {
-    if (checkForSubmission()) {
-      saveApplication();
-      observer.disconnect(); 
-    }
-  });
+// run immediately
+trySave();
 
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-});
+// retry for 10 seconds
+const interval = setInterval(() => {
+  trySave();
+}, 500);
+
+setTimeout(() => {
+  clearInterval(interval);
+}, 10000);
