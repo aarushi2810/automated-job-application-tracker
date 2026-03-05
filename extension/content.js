@@ -67,36 +67,30 @@ urlObserver.observe(document, {
 
 
 
-const applyKeywords = [
-  "apply",
-  "easy apply",
-  "submit",
-  "submit application",
-  "finish application",
-  "continue application"
-];
+
+      
 
 document.addEventListener("click", (e) => {
 
-  const btn = e.target.closest("button");
+  const el = e.target.closest("button, a, div, span");
 
-  if (!btn) return;
+  if (!el) return;
 
-  const text = btn.innerText.toLowerCase();
+  const text = el.innerText?.toLowerCase() || "";
 
-  for (let k of applyKeywords) {
+  if (
+    text.includes("apply") ||
+    text.includes("easy apply") ||
+    text.includes("submit") ||
+    text.includes("submit application") ||
+    text.includes("finish application")
+  ) {
 
-    if (text.includes(k)) {
+    console.log("🟡 Apply button clicked:", text);
 
-      console.log(" Apply button clicked:", text);
-
-      setTimeout(() => {
-        checkKeywords();
-      }, 4000);
-
-      break;
-
-    }
+    setTimeout(() => {
+      checkKeywords();
+    }, 4000);
 
   }
 
