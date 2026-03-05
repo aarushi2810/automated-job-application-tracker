@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Job Tracker</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        margin: 0;
+        padding: 12px;
+        background: #0f172a;
+        color: #e5e7eb;
+        min-width: 320px;
+      }
+
+      h1 {
+        font-size: 16px;
+        margin: 0 0 8px;
+      }
+
+      .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 10px;
+        margin-bottom: 4px;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-bottom: 6px;
+      }
+
+      label {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      input {
+        border-radius: 6px;
+        border: 1px solid #374151;
+        background: #020617;
+        padding: 6px 8px;
+        color: #e5e7eb;
+        font-size: 13px;
+      }
+
+      input:focus {
+        outline: 2px solid #4f46e5;
+        outline-offset: 1px;
+        border-color: transparent;
+      }
+
+      button {
+        border-radius: 6px;
+        border: none;
+        padding: 6px 10px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      #save-btn {
+        width: 100%;
+        margin-top: 6px;
+        background: linear-gradient(to right, #4f46e5, #6366f1);
+        color: white;
+      }
+
+      #save-btn:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+
+      #status {
+        font-size: 12px;
+        margin-top: 6px;
+      }
+
+      #status.ok {
+        color: #6ee7b7;
+      }
+
+      #status.error {
+        color: #fca5a5;
+      }
+
+      #status.info {
+        color: #93c5fd;
+      }
+
+      .row {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .row button {
+        white-space: nowrap;
+        background: #111827;
+        color: #e5e7eb;
+        border: 1px solid #374151;
+      }
+
+      .hint {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 4px;
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid #1f2937;
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Job Application Tracker</h1>
+
+    <div class="section-title">Current job</div>
+    <div class="field">
+      <label for="company">Company</label>
+      <input id="company" placeholder="Acme Corp" />
+    </div>
+    <div class="field">
+      <label for="role">Role</label>
+      <input id="role" placeholder="Software Engineer" />
+    </div>
+    <div class="field">
+      <label for="location">Location</label>
+      <input id="location" placeholder="Remote / City" />
+    </div>
+    <div class="field">
+      <label for="platform">Platform</label>
+      <input id="platform" placeholder="LinkedIn, Greenhouse, ..." />
+    </div>
+
+    <button id="save-btn">Save this job</button>
+    <div id="status" class="info"></div>
+
+    <hr />
+
+    <div class="section-title">Extension login</div>
+    <div class="field">
+      <label for="token">API token (JWT)</label>
+      <input
+        id="token"
+        type="password"
+        placeholder="Paste token from dashboard"
+      />
+    </div>
+    <div class="row">
+      <button id="save-token-btn">Save token</button>
+      <span class="hint">Used to associate saves with your account.</span>
+    </div>
+
+    <p class="hint">
+      Tip: Open the dashboard, copy your token, then paste it here once per
+      browser to sync applications across devices.
+    </p>
+
+    <script src="popup.js"></script>
+  </body>
+  </html>
+

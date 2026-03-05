@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require("../db");
 const authMiddleware = require("../middleware/authMiddleware");
 
-router.get("/platforms",authMiddleware, async (req, res) => {
+router.get("/platforms", authMiddleware, async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT platform, COUNT(*) AS count
@@ -20,7 +20,7 @@ router.get("/platforms",authMiddleware, async (req, res) => {
 });
 
 
-router.get("/daily", authMiddleware,async (req, res) => {
+router.get("/daily", authMiddleware, async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT applied_date, COUNT(*) AS count
@@ -38,7 +38,7 @@ router.get("/daily", authMiddleware,async (req, res) => {
 });
 
 
-router.get("/total",authMiddleware, async (req, res) => {
+router.get("/total", authMiddleware, async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT COUNT(*) AS total
@@ -49,6 +49,25 @@ router.get("/total",authMiddleware, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch total applications" });
+  }
+});
+
+router.get("/status", authMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT status, COUNT(*) AS count
+      FROM applications
+      WHERE user_id = $1
+      GROUP BY status
+      `,
+      [req.user.id]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch status analytics" });
   }
 });
 

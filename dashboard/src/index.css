@@ -1,91 +1,194 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  color: #0f172a;
+  background-color: #020617;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background: radial-gradient(circle at top, #0f172a 0, #020617 50%, #000 100%);
+  color: #e5e7eb;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+a {
+  font-weight: 500;
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #93c5fd;
 }
 
 button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
-  font-size: 1em;
+  font-size: 0.95rem;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #111827;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.2s, background-color 0.2s, transform 0.1s;
 }
+
 button:hover {
-  border-color: #646cff;
+  border-color: #4f46e5;
+  background-color: #1f2937;
 }
-button:focus,
+
+button:active {
+  transform: scale(0.98);
+}
+
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 1080px;
+  margin: 32px auto;
+  padding: 0 16px 32px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.page-subtitle {
+  margin: 4px 0 0;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.section {
+  margin-top: 24px;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.link {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #1f2937;
+  background: rgba(15, 23, 42, 0.9);
+  font-size: 0.8rem;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: radial-gradient(circle at top left, #1f2937, #020617);
+  border-radius: 16px;
+  padding: 14px 16px;
+  border: 1px solid #111827;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.card-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+  margin-bottom: 6px;
+}
+
+.card-value {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+
+.card-list > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pill {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.15);
+  color: #bfdbfe;
+  font-size: 0.78rem;
+}
+
+.muted {
+  color: #6b7280;
 }
 
 .auth-container {
   max-width: 400px;
-  margin: 100px auto;
+  margin: 80px auto;
   padding: 30px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  background: radial-gradient(circle at top, #111827, #020617);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  border: 1px solid #1f2937;
 }
 
 .auth-container input {
   width: 100%;
   padding: 10px;
   margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #374151;
+  background: #020617;
+  color: #e5e7eb;
 }
 
 .auth-container button {
   width: 100%;
   padding: 10px;
+  background: linear-gradient(to right, #4f46e5, #6366f1);
+  color: white;
 }
 
 .error {
-  color: red;
+  color: #fca5a5;
   margin-bottom: 10px;
 }
 
-
 .claim-box {
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px dashed #374151;
   padding: 12px;
   margin-bottom: 16px;
   text-align: center;
+  border-radius: 10px;
 }
 
 .btn {
@@ -97,15 +200,10 @@ button:focus-visible {
   cursor: pointer;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+@media (max-width: 640px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
+
