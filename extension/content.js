@@ -6,7 +6,7 @@ function saveApplication() {
   if (saved) return;
   saved = true;
 
-  console.log(" Job application detected");
+  console.log("Job application detected");
 
   chrome.runtime.sendMessage({
     type: "SAVE_APPLICATION",
@@ -19,13 +19,14 @@ function saveApplication() {
 }
 
 
-
 const keywords = [
   "thank you for applying",
   "application received",
   "application submitted",
   "we have received your application",
-  "successfully applied"
+  "successfully applied",
+  "your application has been submitted",
+  "application complete"
 ];
 
 function checkKeywords() {
@@ -44,15 +45,36 @@ function checkKeywords() {
 let lastUrl = location.href;
 
 const urlObserver = new MutationObserver(() => {
+
   if (location.href !== lastUrl) {
+
+    console.log(" URL changed");
+
     lastUrl = location.href;
-    setTimeout(checkKeywords, 1000);
+
+    setTimeout(() => {
+      checkKeywords();
+    }, 1500);
+
   }
+
 });
 
-urlObserver.observe(document, { subtree: true, childList: true });
+urlObserver.observe(document, {
+  subtree: true,
+  childList: true
+});
 
 
+
+const applyKeywords = [
+  "apply",
+  "easy apply",
+  "submit",
+  "submit application",
+  "finish application",
+  "continue application"
+];
 
 document.addEventListener("click", (e) => {
 
@@ -62,17 +84,37 @@ document.addEventListener("click", (e) => {
 
   const text = btn.innerText.toLowerCase();
 
-  if (
-    text.includes("apply") ||
-    text.includes("submit application")
-  ) {
-    console.log(" Apply button clicked");
+  for (let k of applyKeywords) {
 
-    setTimeout(checkKeywords, 5000);
+    if (text.includes(k)) {
+
+      console.log(" Apply button clicked:", text);
+
+      setTimeout(() => {
+        checkKeywords();
+      }, 4000);
+
+      break;
+
+    }
+
   }
 
 });
 
 
 
-setInterval(checkKeywords, 2000);
+document.addEventListener("submit", () => {
+
+  console.log(" Application form submitted");
+
+  setTimeout(() => {
+    checkKeywords();
+  }, 4000);
+
+});
+
+
+setInterval(() => {
+  checkKeywords();
+}, 3000);
