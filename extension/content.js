@@ -1,57 +1,78 @@
-console.log("🚀 Job Tracker content script loaded");
-
-const successKeywords = [
-  "thank you for applying",
-  "application submitted",
-  "we received your application",
-  "application received"
-];
-
-function checkForSubmission() {
-  const text = document.body?.innerText?.toLowerCase() || "";
-  return successKeywords.some(k => text.includes(k));
-}
-
-function saveApplication() {
-  console.log(" Job application detected");
-
-  chrome.runtime.sendMessage(
-    {
-      type: "SAVE_APPLICATION",
-      payload: {
-        company: document.title.slice(0, 100),
-        role: "Unknown",
-        platform: window.location.hostname
-      }
-    },
-    response => {
-      if (response?.success) {
-        console.log("Saved application:", response.data);
-      } else {
-        console.error(" Failed to save", response?.error);
-      }
-    }
-  );
-}
-
+console.log(" Job Tracker content script loaded");
 
 let saved = false;
 
-function trySave() {
-  if (!saved && checkForSubmission()) {
-    saved = true;
-    saveApplication();
+function saveApplication() {
+  if (saved) return;
+  saved = true;
+
+  console.log(" Job application detected");
+
+  chrome.runtime.sendMessage({
+    type: "SAVE_APPLICATION",
+    payload: {
+      pageText: document.body.innerText,
+      title: document.title,
+      url: window.location.href
+    }
+  });
+}
+
+
+
+const keywords = [
+  "thank you for applying",
+  "application received",
+  "application submitted",
+  "we have received your application",
+  "successfully applied"
+];
+
+function checkKeywords() {
+  const text = document.body.innerText.toLowerCase();
+
+  for (let word of keywords) {
+    if (text.includes(word)) {
+      saveApplication();
+      break;
+    }
   }
 }
 
-// run immediately
-trySave();
 
-// retry for 10 seconds
-const interval = setInterval(() => {
-  trySave();
-}, 500);
 
-setTimeout(() => {
-  clearInterval(interval);
-}, 10000);
+let lastUrl = location.href;
+
+const urlObserver = new MutationObserver(() => {
+  if (location.href !== lastUrl) {
+    lastUrl = location.href;
+    setTimeout(checkKeywords, 1000);
+  }
+});
+
+urlObserver.observe(document, { subtree: true, childList: true });
+
+
+
+document.addEventListener("click", (e) => {
+
+  const btn = e.target.closest("button");
+
+  if (!btn) return;
+
+  const text = btn.innerText.toLowerCase();
+
+  if (
+    text.includes("apply") ||
+    text.includes("submit application")
+  ) {
+    console.log(" Apply button clicked");
+
+    setTimeout(checkKeywords, 5000);
+  }
+
+});
+
+
+
+setInterval(checkKeywords, 2000);
