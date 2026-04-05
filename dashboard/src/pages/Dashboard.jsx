@@ -1,6 +1,6 @@
 import ApplicationsTable from "../components/ApplicationsTable";
 import AnalyticsSummary from "../components/AnalyticsSummary";
-import ResumeMatcher from "../components/ResumeMatcher";
+import ATSAnalyzer from "../components/ATSAnalyzer";
 
 export default function Dashboard() {
   return (
@@ -24,7 +24,7 @@ export default function Dashboard() {
 
       <AnalyticsSummary />
 
-      <ResumeMatcher />
+      <ATSAnalyzer />
 
       <section className="section">
         <h2 className="section-title">Applications</h2>

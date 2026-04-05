@@ -39,6 +39,9 @@ app.use("/match", matchRoute);
 
 const jobParserRoute = require("./routes/jobParser");
 app.use("/job-parser", jobParserRoute);
+
+const atsRoute = require("./routes/ats");
+app.use("/ats", atsRoute);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

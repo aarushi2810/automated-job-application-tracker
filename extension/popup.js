@@ -1,8 +1,22 @@
+const BACKEND_BASE_URL =
+  "https://automated-job-application-tracker.onrender.com";
+
 function setStatus(message, type = "info") {
   const statusEl = document.getElementById("status");
   if (!statusEl) return;
   statusEl.textContent = message;
   statusEl.className = type;
+}
+
+function setTokenBadge(connected, text) {
+  const badge = document.getElementById("token-badge");
+  const badgeText = document.getElementById("token-badge-text");
+  if (!badge || !badgeText) return;
+
+  badge.className = connected
+    ? "token-status connected"
+    : "token-status disconnected";
+  badgeText.textContent = text;
 }
 
 async function getActiveTab() {
@@ -17,6 +31,54 @@ async function getActiveTab() {
   });
 }
 
+async function getStoredToken() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(["jobTrackerToken"], (result) => {
+      resolve(result && result.jobTrackerToken ? result.jobTrackerToken : null);
+    });
+  });
+}
+
+async function testBackendConnection(token) {
+  try {
+    const res = await fetch(`${BACKEND_BASE_URL}/health`, {
+      method: "GET",
+      headers: token
+        ? { Authorization: `Bearer ${token}` }
+        : {},
+    });
+
+    if (!res.ok) {
+      return { ok: false, error: `Backend returned HTTP ${res.status}` };
+    }
+
+    // If we have a token, also test auth by hitting a protected endpoint
+    if (token) {
+      const authRes = await fetch(`${BACKEND_BASE_URL}/applications`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (authRes.status === 401) {
+        return { ok: false, error: "Token is invalid or expired" };
+      }
+
+      if (!authRes.ok) {
+        return { ok: false, error: `Auth check returned HTTP ${authRes.status}` };
+      }
+
+      return { ok: true, authenticated: true };
+    }
+
+    return { ok: true, authenticated: false };
+  } catch (e) {
+    return { ok: false, error: `Cannot reach backend: ${e.message}` };
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const companyInput = document.getElementById("company");
   const roleInput = document.getElementById("role");
@@ -25,32 +87,53 @@ document.addEventListener("DOMContentLoaded", async () => {
   const saveBtn = document.getElementById("save-btn");
   const tokenInput = document.getElementById("token");
   const saveTokenBtn = document.getElementById("save-token-btn");
+  const testBtn = document.getElementById("test-btn");
 
-  setStatus("Loading current job details...", "info");
+  // --- Check token status on load ---
+  const existingToken = await getStoredToken();
 
-  // Prefill token state (we don't show the real token, just indicate presence)
-  chrome.storage.sync.get(["jobTrackerToken"], (result) => {
-    if (result && result.jobTrackerToken) {
-      tokenInput.placeholder = "Token saved";
+  if (existingToken) {
+    setTokenBadge(false, "Verifying token...");
+    const result = await testBackendConnection(existingToken);
+    if (result.ok && result.authenticated) {
+      setTokenBadge(true, "Connected & authenticated ✓");
+    } else {
+      setTokenBadge(false, result.error || "Token invalid");
+      setStatus(
+        "⚠️ Your saved token is no longer valid. Paste a new one below.",
+        "error"
+      );
     }
-  });
+  } else {
+    setTokenBadge(false, "Not connected — paste token below");
+    setStatus(
+      "⚠️ No token saved. Applications will NOT be tracked until you paste a JWT token.",
+      "error"
+    );
+  }
 
+  // --- Prefill job details from content script ---
   const activeTab = await getActiveTab();
 
   if (!activeTab || !activeTab.id) {
-    setStatus("No active tab found.", "error");
+    // Don't overwrite token warning
+    if (existingToken) {
+      setStatus("No active tab found.", "info");
+    }
   } else {
-    // Ask the content script on the current tab for parsed job details
     try {
       chrome.tabs.sendMessage(
         activeTab.id,
         { type: "GET_JOB_DETAILS" },
         (response) => {
           if (chrome.runtime.lastError) {
-            setStatus(
-              "This page is not a supported job site, or the content script is not loaded.",
-              "error"
-            );
+            // Only show this if we haven't already shown a more important message
+            if (existingToken) {
+              setStatus(
+                "This page is not a supported job site, or the content script is not loaded.",
+                "info"
+              );
+            }
             return;
           }
 
@@ -62,21 +145,33 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (platform) platformInput.value = platform;
             setStatus("Detected job details. Review and save.", "ok");
           } else {
-            setStatus(
-              "Could not auto-detect this job. Fill details and save manually.",
-              "info"
-            );
+            if (existingToken) {
+              setStatus(
+                "Could not auto-detect this job. Fill details manually.",
+                "info"
+              );
+            }
           }
         }
       );
     } catch (e) {
-      setStatus("Unable to reach content script on this tab.", "error");
+      // ignore
     }
   }
 
+  // --- Save application button ---
   saveBtn.addEventListener("click", async () => {
     if (!activeTab || !activeTab.url) {
       setStatus("No active job tab to save.", "error");
+      return;
+    }
+
+    const token = await getStoredToken();
+    if (!token) {
+      setStatus(
+        "❌ No token saved! Paste your JWT token below and save it first.",
+        "error"
+      );
       return;
     }
 
@@ -131,30 +226,73 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const message =
-          response.data && response.data.message === "Duplicate application ignored"
+          response.data &&
+          response.data.message === "Duplicate application ignored"
             ? "Already saved today (duplicate ignored)."
-            : "Application saved successfully.";
+            : "✅ Application saved successfully!";
         setStatus(message, "ok");
       }
     );
   });
 
+  // --- Save token button ---
   saveTokenBtn.addEventListener("click", () => {
     const token = tokenInput.value.trim();
     if (!token) {
       chrome.storage.sync.remove("jobTrackerToken", () => {
         tokenInput.value = "";
         tokenInput.placeholder = "Token cleared";
+        setTokenBadge(false, "Token cleared — paste a new one");
         setStatus("Cleared saved token.", "info");
       });
       return;
     }
 
-    chrome.storage.sync.set({ jobTrackerToken: token }, () => {
+    chrome.storage.sync.set({ jobTrackerToken: token }, async () => {
       tokenInput.value = "";
-      tokenInput.placeholder = "Token saved";
-      setStatus("Token saved for extension.", "ok");
+      tokenInput.placeholder = "Token saved ✓";
+      setStatus("Verifying token...", "info");
+
+      // Immediately verify the new token
+      const result = await testBackendConnection(token);
+      if (result.ok && result.authenticated) {
+        setTokenBadge(true, "Connected & authenticated ✓");
+        setStatus("✅ Token saved and verified! Auto-tracking is active.", "ok");
+      } else {
+        setTokenBadge(false, result.error || "Token invalid");
+        setStatus(
+          `⚠️ Token saved but verification failed: ${result.error}. Check the token and try again.`,
+          "error"
+        );
+      }
     });
   });
-}
 
+  // --- Test connection button ---
+  testBtn.addEventListener("click", async () => {
+    testBtn.disabled = true;
+    testBtn.textContent = "Testing...";
+
+    const token = await getStoredToken();
+    const result = await testBackendConnection(token);
+
+    testBtn.disabled = false;
+    testBtn.textContent = "Test connection";
+
+    if (result.ok) {
+      if (result.authenticated) {
+        setTokenBadge(true, "Connected & authenticated ✓");
+        setStatus("✅ Backend reachable, token valid!", "ok");
+      } else {
+        setTokenBadge(false, "Backend online, but no token");
+        setStatus(
+          "Backend is reachable but no token saved. Paste your JWT token to enable tracking.",
+          "info"
+        );
+      }
+    } else {
+      setTokenBadge(false, result.error);
+      setStatus(`❌ Connection test failed: ${result.error}`, "error");
+    }
+  });
+});

@@ -11,12 +11,15 @@
         padding: 12px;
         background: #0f172a;
         color: #e5e7eb;
-        min-width: 320px;
+        min-width: 340px;
       }
 
       h1 {
         font-size: 16px;
         margin: 0 0 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
 
       .section-title {
@@ -118,10 +121,67 @@
         border-top: 1px solid #1f2937;
         margin: 10px 0;
       }
+
+      /* Token status badge */
+      .token-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+
+      .token-status.connected {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #6ee7b7;
+      }
+
+      .token-status.disconnected {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #fca5a5;
+      }
+
+      .token-status .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .token-status.connected .dot {
+        background: #22c55e;
+        box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+      }
+
+      .token-status.disconnected .dot {
+        background: #ef4444;
+        box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+      }
+
+      #test-btn {
+        background: #1e293b;
+        color: #93c5fd;
+        border: 1px solid #334155;
+        font-size: 11px;
+        padding: 4px 8px;
+      }
+
+      #test-btn:hover {
+        background: #334155;
+      }
     </style>
   </head>
   <body>
-    <h1>Job Application Tracker</h1>
+    <h1>📋 Job Application Tracker</h1>
+
+    <div id="token-badge" class="token-status disconnected">
+      <span class="dot"></span>
+      <span id="token-badge-text">Not connected — paste token below</span>
+    </div>
 
     <div class="section-title">Current job</div>
     <div class="field">
@@ -157,15 +217,15 @@
     </div>
     <div class="row">
       <button id="save-token-btn">Save token</button>
+      <button id="test-btn">Test connection</button>
       <span class="hint">Used to associate saves with your account.</span>
     </div>
 
     <p class="hint">
-      Tip: Open the dashboard, copy your token, then paste it here once per
-      browser to sync applications across devices.
+      Tip: Login via your dashboard, copy the JWT token, and paste it here.
+      The extension will automatically save applications as you apply.
     </p>
 
     <script src="popup.js"></script>
   </body>
   </html>
-

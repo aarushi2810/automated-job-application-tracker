@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Job Application Auto Tracker",
-  "version": "1.1",
+  "version": "1.2",
   "description": "Automatically (and manually) save job applications from major job portals to your tracker backend.",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "notifications"
   ],
   "host_permissions": [
     "https://automated-job-application-tracker.onrender.com/*"
@@ -21,12 +22,67 @@
     {
       "matches": [
         "https://www.linkedin.com/*",
+        "https://linkedin.com/*",
         "*://*.greenhouse.io/*",
         "*://*.lever.co/*",
         "*://*.workday.com/*",
-        "*://*.smartrecruiters.com/*"
+        "*://*.myworkdayjobs.com/*",
+        "*://*.smartrecruiters.com/*",
+        "*://*.indeed.com/*",
+        "*://*.glassdoor.com/*",
+        "*://*.glassdoor.co.in/*",
+        "*://*.wellfound.com/*",
+        "*://*.angel.co/*",
+        "*://*.icims.com/*",
+        "*://*.taleo.net/*",
+        "*://*.jobvite.com/*",
+        "*://*.ashbyhq.com/*",
+        "*://*.bamboohr.com/*",
+        "*://*.recruitee.com/*",
+        "*://*.breezy.hr/*",
+        "*://*.applytojob.com/*",
+        "*://*.dice.com/*",
+        "*://*.ziprecruiter.com/*",
+        "*://*.monster.com/*",
+        "*://*.naukri.com/*",
+        "*://*.careers-page.com/*",
+        "*://*.ultipro.com/*"
       ],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.linkedin.com/*",
+        "https://linkedin.com/*",
+        "*://*.greenhouse.io/*",
+        "*://*.lever.co/*",
+        "*://*.workday.com/*",
+        "*://*.myworkdayjobs.com/*",
+        "*://*.smartrecruiters.com/*",
+        "*://*.indeed.com/*",
+        "*://*.glassdoor.com/*",
+        "*://*.glassdoor.co.in/*",
+        "*://*.wellfound.com/*",
+        "*://*.angel.co/*",
+        "*://*.icims.com/*",
+        "*://*.taleo.net/*",
+        "*://*.jobvite.com/*",
+        "*://*.ashbyhq.com/*",
+        "*://*.bamboohr.com/*",
+        "*://*.recruitee.com/*",
+        "*://*.breezy.hr/*",
+        "*://*.applytojob.com/*",
+        "*://*.dice.com/*",
+        "*://*.ziprecruiter.com/*",
+        "*://*.monster.com/*",
+        "*://*.naukri.com/*",
+        "*://*.careers-page.com/*",
+        "*://*.ultipro.com/*"
+      ],
+      "js": ["network_intercept.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
     }
   ]
 }
